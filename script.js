@@ -67,6 +67,16 @@ function createDummyBooks(n) {
     }
 }
 
+// Button functionality
+
+const formContainer = document.querySelector("#book-form");
+
+const newBookButton = document.querySelector(".header button");
+newBookButton.addEventListener('click', () => {
+    formContainer.style.display = "block";
+});
+
+
 createDummyBooks(12);
 
 const container = document.querySelector(".container");
