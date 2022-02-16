@@ -33,6 +33,7 @@ function addBookToLibrary(book) {
 }
 
 function render() {
+    container.innerHTML = '';
     myLibrary.forEach(book => {
         let newBook = document.createElement('div');
         newBook.classList.add('book-card');
@@ -57,23 +58,52 @@ function render() {
         read.textContent = book.read ? "Read." : "Not read yet.";
         newBook.appendChild(read);
 
+        let removeButton = document.createElement('button');
+        removeButton.classList.add('remove-button');
+        removeButton.textContent = "Remove";
+        removeButton.addEventListener('click', (event) => {
+            let bookCard = event.target.parentNode;
+            let removedTitle = bookCard.childNodes[0].textContent;
+            myLibrary = myLibrary.filter(function (obj) {
+                return obj.title !== removedTitle;
+            });
+            render();
+        });
+        newBook.appendChild(removeButton);
+
         container.appendChild(newBook);
     });
 }
 
 function createDummyBooks(n) {
     for (let index = 0; index < n; index++) {
-        myLibrary.push( new Book("The Hobbit", "J.R.R. Tolkien", 295, false) );
+        myLibrary.push( new Book("The Hobbit" + index, "J.R.R. Tolkien", 295, false) );
     }
 }
 
-// Button functionality
-
 const formContainer = document.querySelector("#book-form");
-
 const newBookButton = document.querySelector(".header button");
+const addBookButton = document.querySelector("#book-form button");
+const titleInput = document.querySelector("#title-input");
+const authorInput = document.querySelector("#author-input");
+const pagesInput = document.querySelector("#pages-input");
+const readInput = document.querySelector("#read-input");
+
 newBookButton.addEventListener('click', () => {
     formContainer.style.display = "block";
+});
+
+addBookButton.addEventListener('click', () => {
+    addBookToLibrary(new Book(titleInput.value,
+                              authorInput.value,
+                              pagesInput.value,
+                              readInput.checked));
+    render();
+    titleInput.value = "";
+    authorInput.value = "";
+    pagesInput.value = "";
+    readInput.value = "";
+    formContainer.style.display = "none";
 });
 
 
