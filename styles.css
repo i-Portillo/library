@@ -69,6 +69,8 @@ body, html {
 }
 
 .book-card {
+    display: flex;
+    flex-direction: column;
     height: 280px;
     background-color: cadetblue;
     padding: 10px;

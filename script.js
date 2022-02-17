@@ -28,14 +28,16 @@ Book.prototype.info = function () {
     return info;
 }
 
+Book.prototype.setRead = function (read) {
+    this.read = read;
+}
+
 function addBookToLibrary(book) {
     myLibrary.push(book);
 }
 
-function render() {
-    container.innerHTML = '';
-    myLibrary.forEach(book => {
-        let newBook = document.createElement('div');
+function buildBookCard(book) {
+    let newBook = document.createElement('div');
         newBook.classList.add('book-card');
         
         let title = document.createElement('p');
@@ -61,8 +63,8 @@ function render() {
         let removeButton = document.createElement('button');
         removeButton.classList.add('remove-button');
         removeButton.textContent = "Remove";
-        removeButton.addEventListener('click', (event) => {
-            let bookCard = event.target.parentNode;
+        removeButton.addEventListener('click', (e) => {
+            let bookCard = e.target.parentNode;
             let removedTitle = bookCard.childNodes[0].textContent;
             myLibrary = myLibrary.filter(function (obj) {
                 return obj.title !== removedTitle;
@@ -71,14 +73,33 @@ function render() {
         });
         newBook.appendChild(removeButton);
 
+        let markReadButton = document.createElement('button');
+        markReadButton.classList.add('read-button');
+        markReadButton.textContent = "Mark as read";
+        markReadButton.addEventListener('click', (e) => {
+            let bookCard = e.target.parentNode;
+            console.log(bookCard);
+            let bookIndex = myLibrary.findIndex(book => book.title === bookCard.childNodes[0].textContent)
+            console.log(bookIndex);
+            if (myLibrary[bookIndex].read === false) {
+                myLibrary[bookIndex].read = true;
+                markReadButton.textContent = "Mark as pendent";
+            } else {
+                myLibrary[bookIndex].read = false;
+                markReadButton.textContent = "Mark as read";
+            }
+            render();
+        });
+        newBook.appendChild(markReadButton);
+
         container.appendChild(newBook);
-    });
 }
 
-function createDummyBooks(n) {
-    for (let index = 0; index < n; index++) {
-        myLibrary.push( new Book("The Hobbit" + index, "J.R.R. Tolkien", 295, false) );
-    }
+function render() {
+    container.innerHTML = '';
+    myLibrary.forEach(book => {
+        buildBookCard(book);
+    });
 }
 
 const formContainer = document.querySelector("#book-form");
@@ -106,10 +127,9 @@ addBookButton.addEventListener('click', () => {
     formContainer.style.display = "none";
 });
 
-
-createDummyBooks(12);
-
 const container = document.querySelector(".container");
+
+myLibrary.push( new Book("The Hobbit", "J.R.R. Tolkien", 295, false) );
 
 render();
 
